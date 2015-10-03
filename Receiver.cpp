@@ -34,13 +34,13 @@ void Receiver::adjust_limiters( int n , int *limiters )
 void Receiver::rail_decipher( std::string & str )
 {
 
-	std::cout << "DESCIFRANDO" << std::endl;
+	//std::cout << "DESCIFRANDO" << std::endl;
 
 	int seg = str.size()/(key-1);
 	int rest = Useful::mod(str.size(),key-1);
 
-	std::cout << "resto : " << rest << std::endl;
-	std::cout << "seg : " << seg << std::endl;
+	//std::cout << "resto : " << rest << std::endl;
+	//std::cout << "seg : " << seg << std::endl;
 
 	int * limiters = new int[key];
 
@@ -79,7 +79,7 @@ void Receiver::rail_decipher( std::string & str )
 			for(int j=0 ; j<key-1 && cont > 1; j++)
 			{	
 				char tmp = str[limiters[j]];
-				std::cout << "To right : " << limiters[j] << " -> " << tmp << std::endl;
+				//std::cout << "To right : " << limiters[j] << " -> " << tmp << std::endl;
 				str.erase(str.begin()+limiters[j]);
 				str.insert(str.begin()+limiters[0],tmp);
 				if(j!=0)
@@ -93,7 +93,7 @@ void Receiver::rail_decipher( std::string & str )
 			for(int j=key-1 ; j>0 && cont > 1; j--)
 			{
 				char tmp = str[limiters[j]];
-				std::cout << "To left : " << limiters[j] << " -> " << tmp << std::endl;
+				//std::cout << "To left : " << limiters[j] << " -> " << tmp << std::endl;
 				str.erase(str.begin()+limiters[j]);
 				str.insert(str.begin()+limiters[0],tmp);
 				limiters[0]++;
@@ -110,33 +110,34 @@ void Receiver::rail_decipher( std::string & str )
 
 void Receiver::route_decipher( std::string & str )
 {
-	int row = str.size()/key;
+	std::string * matriz = new std::string[key];
 
-	int x[2] = { int(str.size())/key-1 , key-1 }; // cada cuatro iteraciones se le disminuirá en dos
-
-	int currentPos = 0;
-
-	int * limiters = new int[key];
-
-	for(int i=0 ; i<row ; i++)
-	{
-		char tmp = str[currentPos];
-		str.erase(str.begin()+currentPos);
-		str.insert(str.begin()+limiters[i],tmp);
-		currentPos++;
-		limiters[i]=currentPos;
-	}
-	for(int i=0 ; i<key-1 ; i++)
-	{
-		char tmp = str[currentPos];
-		str.erase(str.begin()+currentPos);
-		str.insert(str.begin(),tmp);
-		currentPos++;
-		for(int j=1 ; j<key ; j++)
-			limiters[i]+=limiters[0];
-	}
 	for(int i=0 ; i<key ; i++)
-		std::cout << limiters[i] << std::endl;
+		matriz[i].append((str.size()/key) , ' ');
+
+	bool sum = true;
+
+	u_int it_y = key - 1;
+	u_int it_x = str.size()/key - 1;
+
+	u_int currentPos = 0;
+
+	for(int i=0 ; i<key/2 ; i++)
+	{
+		for(int j=0 ; j<4 ; j++)
+		{
+			for(int k=0 ; Useful::isEven(j)?k<it_y:k<it_x ; k++)	
+			{
+				if(j==0)
+					matriz[0][it_x] = str[currentPos++];
+			}
+		}
+		it_x-=2;
+		it_y-=2;
+		
+	}
+
+
 };
 
 void Receiver::affinne_decipher( std::string & str , int A_i , int B )

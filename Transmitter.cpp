@@ -14,6 +14,18 @@ void Transmitter::adjust_indexes( u_int x , u_int* n )
 		n[i]++;
 };
 
+void Transmitter::adjust_str(std::string & str)
+{
+	// ajustaremos en caso que mod sea diferente de 0 , sino lo es regresa como estaba
+	int mod=Useful::mod(str.size(),key);
+	if(mod!=0)
+	{
+		const int adj = key- Useful::mod(str.size(),key);
+		for(int i=0 ; i < adj ; i++)
+			str+="x";
+	}
+}
+
 void Transmitter::cesar_cipher ( std::string & str )
 {
 	for( int i=0 ; i < str.size() ; i++ )
@@ -62,60 +74,56 @@ void Transmitter::rail_cipher( std::string & str )
 
 void Transmitter::route_cipher( std::string & str )
 {
-	//adjust_string( str , key );
+	adjust_str(str);
+	std::string str1;
 
-	std::string res;
+	unsigned int size = str.size();
+	unsigned int contVallas = 0;
+	//usamos contadorx para rstringrir que solo ingrese size veces al programa
+	unsigned int contadorx=0;
+	for(int i=0 ; i<key ; i++)
+		for(int j=0 ; j<size/key ; j++)
+			str1 += str[ (((i*(size)+j )*key) + i)%(size)];
 
-	int x[2] = { int(str.size())/key-1 , key-1 }; // cada cuatro iteraciones se le disminuirá en dos
+	std::string str2;
 
-	int currentPos = str.size()-1;
-
-	for( int i=0 ; i<( Useful::isEven(key) ? key/2 : (key-1)/2 ) ; i++ ) 	// # de capas
+	int i=(size/key)-1; 
+	unsigned int currentPos = i;
+	bool sum = true;
+	
+	int vueltas = 0;
+	//lo demas es muy parecido al key generator solo varia key por size/key
+	for(int it = 0 ; vueltas < (key/2) ; it=it+2)
 	{
-		for( int j=0 ; j<4 ; j++ )									// # de flechas , siempre es 4
+		for(int j=0 ; j<4 ; j++)
 		{
 			if( Useful::isEven(j) )
-			{
-				int idx;
-
-				for(int k=0 ; k<x[0] ; k++)
+				for( int k=0 ; k<key-1-it  && contadorx < size; k++ )
 				{
-					idx =  j==0 ? currentPos-k*key : currentPos+k*key;
-					res += str[idx];
+					str2 += str1[currentPos];
+					currentPos = sum ? currentPos + (size/key) : currentPos - (size/key) ; 
+					contadorx++;
 				}
-
-				if( x[0] == 0 )
-				{
-					res += str[currentPos];
-					currentPos--;
-				}
-
-				else
-					currentPos = idx + ( j==0 ? -key : key);
-
-			}
-
 			else
-			{
-				int idx;
-				for(int k=0 ; k<x[1] ; k++)
+				for( int k=0 ; k <(size/key)-1-it && contadorx < size; k++ )
 				{
-					idx =  j==1 ? currentPos-k : currentPos+k;
-					res += str[idx];;
+					str2 += str1[currentPos];
+					currentPos = sum ? (k==(size/key)-1-it-1 ? currentPos+(size/key) :currentPos+1) : currentPos-1 ;
+					contadorx++;
 				}
-				currentPos = idx + ( j==1 ? -1 : -key );
-			}
-
+			sum = (j==0 || j==1) ? false : true;  
 		}
-		x[0]-=2;
-		x[1]-=2;
+		vueltas++;
 	}
-
-	if( Useful::isEven(key) )
-		str = res;
-	else
-		str = res + str[currentPos];
 	
+	//usamos el buen conocido key cuando es impar y mejor al size/key
+	if( ! Useful::isEven(key)&& key<=size/key)
+		for(int j=0 ;  j<((size/key)/2)-1 ; j++)
+		{
+			str2 += str1[currentPos];
+			currentPos--;
+		}
+	str = str2;
 };
 
 void Transmitter::affinne_cipher( std::string & str , u_int A , u_int B)
