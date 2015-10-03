@@ -117,14 +117,17 @@ void Transmitter::route_cipher( std::string & str )
 	}
 	
 	//usamos el buen conocido key cuando es impar y mejor al size/key
-	if( ! Useful::isEven(key)&& key<=size/key)
-		for(int j=0 ;  j<((size/key)/2)-1 ; j++)
+	if( ! Useful::isEven(key) )
+		for(int j=0 ;  j<((size/key)/2) && contadorx<size; j++)
 		{
 			str2 += str1[currentPos];
 			currentPos--;
+			contadorx++;
 		}
+
 	str = str2;
 };
+
 
 void Transmitter::affinne_cipher( std::string & str , u_int A , u_int B)
 {

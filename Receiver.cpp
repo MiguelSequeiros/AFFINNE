@@ -39,8 +39,8 @@ void Receiver::rail_decipher( std::string & str )
 	int seg = str.size()/(key-1);
 	int rest = Useful::mod(str.size(),key-1);
 
-	//std::cout << "resto : " << rest << std::endl;
-	//std::cout << "seg : " << seg << std::endl;
+	std::cout << "resto : " << rest << std::endl;
+	std::cout << "seg : " << seg << std::endl;
 
 	int * limiters = new int[key];
 
@@ -54,6 +54,7 @@ void Receiver::rail_decipher( std::string & str )
 		int c=1;
 		for(int i=2 ; i<key && rest>1 && c<rest; i++)
 			limiters[i]+=c;
+
 	}
 	else
 	{
@@ -63,6 +64,8 @@ void Receiver::rail_decipher( std::string & str )
 
 		for(int i=1 ; i<rest ; i++)
 			limiters[key-i]++;
+
+	
 	}
 
 
@@ -110,33 +113,54 @@ void Receiver::rail_decipher( std::string & str )
 
 void Receiver::route_decipher( std::string & str )
 {
-	std::string * matriz = new std::string[key];
+    int col = key;
+    int cont =1;
 
-	for(int i=0 ; i<key ; i++)
-		matriz[i].append((str.size()/key) , ' ');
+    std::string str1;
+    str1.append(str.size(),'*');
 
-	bool sum = true;
+    int r=0, pb = str.size()-1,pf = 0, c=0 , cant=col;
+    while(str.size()>0)
+    {
+        for(r+=col-1,c=0; r<pb+1; r+=col)
+        {
+            str1[r]=str[c];
+            str.erase(c,1);
+        }
 
-	u_int it_y = key - 1;
-	u_int it_x = str.size()/key - 1;
+        for(r=pb-1,c=0;r>pb-cant; r--,c++)
+        {
+            str1[r]=str[c];
+        }
 
-	u_int currentPos = 0;
+        str.erase(0,c);
+        pb-=(cant);
+        cant--;
 
-	for(int i=0 ; i<key/2 ; i++)
-	{
-		for(int j=0 ; j<4 ; j++)
-		{
-			for(int k=0 ; Useful::isEven(j)?k<it_y:k<it_x ; k++)	
-			{
-				if(j==0)
-					matriz[0][it_x] = str[currentPos++];
-			}
-		}
-		it_x-=2;
-		it_y-=2;
-		
-	}
+        for(r= pb-(col-1),c=0;str.size()>0 && r>pf;r-=(col))
+        {
+            str1[r]=str[c];
+            str.erase(c,1);
+        }
 
+        for(r=pf,c=0; r<pf+(cant) && str.size()>0;r++,c++)
+            str1[r]=str[c];
+
+        str.erase(0,c);
+        pf+=col+1;
+
+        pb-=1;
+        cant--;
+    }
+
+    int h = str1.find('*');
+    while(h!=std::string::npos)
+    {
+        str1.erase(h,1);
+        h=str1.find('*');
+    }
+
+    str = str1;
 
 };
 

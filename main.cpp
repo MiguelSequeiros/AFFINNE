@@ -15,7 +15,7 @@ int main()
 	std::cin>>key;
 	std::cin>>clave;
 
-	std::string alphabet("abcdefghijklmnopqrstuvwxyz");
+	std::string alphabet("abcdefghijklmnopqrstuvwxyz ");
 
 	Transmitter alice( key , alphabet );
 	Receiver bob( key , alphabet );
