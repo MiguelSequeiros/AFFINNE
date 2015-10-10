@@ -33,11 +33,28 @@ int main(int argc, char const *argv[])
 	std::string clave;
 	std::getline(std::cin,clave);
 
-	std::cout << "Su clave es : " << std::endl;
-	std::cout << clave << std::endl;
+	std::cout << "cifrar(1) decifrar(2)" << std::endl;
+	std::cin>>opt;
+
+	if(opt==1)
+		{
+			std::cout << "Su clave es : " << std::endl;
+			alice.rcesar_cipher(clave);
+			std::cout << clave << std::endl;
+		}
+
+	else if(opt==2)
+		{
+			std::cout << "Su clave es : " << std::endl;
+			bob.rcesar_decipher(clave);
+			std::cout << clave << std::endl;
+		}
 
 	u_int A,B=0;
 
+
+	clock_t start = clock();
+	    
 	try
 	{
 		KeyGenerator::keyGenerator_RailAndRoutes(alphabet , clave , key , A , B);
@@ -47,12 +64,14 @@ int main(int argc, char const *argv[])
 		std::cerr << error << std::endl;
 	}
 
+	std::cout << "Time Generation: " << double(clock() - start)/CLOCKS_PER_SEC << std::endl;
+
 	std::cout << " Clave A : " << A << std::endl;
 	std::cout << " Clave B : " << B << std::endl;
 
 	int A_i = Euclides::extended_inv( A , alphabet.size());
 
-	std::cout << " Clave A_i : " << A_i << std::endl;
+	std::cout << " Clave A_i : " << Useful::mod(A_i,alphabet.size()) << std::endl;
 
 
 	std::cout << "Ingrese el texto a tratar: " << std::endl;
@@ -70,9 +89,16 @@ int main(int argc, char const *argv[])
 
 	else
 	{
+
+		start = clock();
 		alice.affinne_cipher(msg,A,B);
+		std::cout << "Time cipher: " << double(clock() - start)/CLOCKS_PER_SEC << std::endl;
+
 		std::cout << msg << std::endl;
+		start = clock();
 		bob.affinne_decipher(msg,A_i,B);
+		std::cout << "Time decipher: " << double(clock() - start)/CLOCKS_PER_SEC << std::endl;
+
 	}
 
 	std::cout << msg << std::endl;
