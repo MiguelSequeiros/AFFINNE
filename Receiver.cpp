@@ -39,10 +39,13 @@ void Receiver::rail_decipher( std::string & str )
 	int seg = str.size()/(key-1);
 	int rest = Useful::mod(str.size(),key-1);
 
-	std::cout << "resto : " << rest << std::endl;
-	std::cout << "seg : " << seg << std::endl;
+	//std::cout << "resto : " << rest << std::endl;
+	//std::cout << "seg : " << seg << std::endl;
 
 	int * limiters = new int[key];
+
+	for(int i=0 ; i<key ; i++)
+		limiters[i] = 0;
 
 	if(Useful::isEven(seg))
 	{
@@ -56,6 +59,7 @@ void Receiver::rail_decipher( std::string & str )
 			limiters[i]+=c;
 
 	}
+
 	else
 	{
 		limiters[1] = seg/2 + 1;
@@ -69,8 +73,8 @@ void Receiver::rail_decipher( std::string & str )
 	}
 
 
-	for(int i=0 ; i<key ; i++)
-		std::cout << limiters[i] << std::endl;
+	//for(int i=0 ; i<key ; i++)
+		//std::cout << limiters[i] << std::endl;
 
 	bool toRight = true;
 
@@ -82,7 +86,7 @@ void Receiver::rail_decipher( std::string & str )
 			for(int j=0 ; j<key-1 && cont > 1; j++)
 			{	
 				char tmp = str[limiters[j]];
-				//std::cout << "To right : " << limiters[j] << " -> " << tmp << std::endl;
+				////std::cout << "To right : " << limiters[j] << " -> " << tmp << std::endl;
 				str.erase(str.begin()+limiters[j]);
 				str.insert(str.begin()+limiters[0],tmp);
 				if(j!=0)
@@ -113,55 +117,8 @@ void Receiver::rail_decipher( std::string & str )
 
 void Receiver::route_decipher( std::string & str )
 {
-    int col = key;
-    int cont =1;
-
-    std::string str1;
-    str1.append(str.size(),'*');
-
-    int r=0, pb = str.size()-1,pf = 0, c=0 , cant=col;
-    while(str.size()>0)
-    {
-        for(r+=col-1,c=0; r<pb+1; r+=col)
-        {
-            str1[r]=str[c];
-            str.erase(c,1);
-        }
-
-        for(r=pb-1,c=0;r>pb-cant; r--,c++)
-        {
-            str1[r]=str[c];
-        }
-
-        str.erase(0,c);
-        pb-=(cant);
-        cant--;
-
-        for(r= pb-(col-1),c=0;str.size()>0 && r>pf;r-=(col))
-        {
-            str1[r]=str[c];
-            str.erase(c,1);
-        }
-
-        for(r=pf,c=0; r<pf+(cant) && str.size()>0;r++,c++)
-            str1[r]=str[c];
-
-        str.erase(0,c);
-        pf+=col+1;
-
-        pb-=1;
-        cant--;
-    }
-
-    int h = str1.find('*');
-    while(h!=std::string::npos)
-    {
-        str1.erase(h,1);
-        h=str1.find('*');
-    }
-
-    str = str1;
-
+/**/
+	std::cout << "Houston algo anda mal" << std::endl;
 };
 
 void Receiver::affinne_decipher( std::string & str , int A_i , int B )

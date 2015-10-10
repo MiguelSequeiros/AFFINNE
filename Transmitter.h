@@ -11,7 +11,7 @@ private:
 	int key;
 	std::string alphabet;
 
-	void adjust_indexes( u_int , u_int* );
+	void adjust_indexes( int , int* );
 	void adjust_str( std::string & );
 
 	/*Generacion de claves*/

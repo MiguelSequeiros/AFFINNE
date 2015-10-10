@@ -8,7 +8,7 @@ Transmitter::Transmitter(int key , std::string alphabet)
 	this -> alphabet = alphabet;
 };
 
-void Transmitter::adjust_indexes( u_int x , u_int* n )
+void Transmitter::adjust_indexes( int x , int* n )
 {
 	for(int i=x ; i<key ; i++)
 		n[i]++;
@@ -22,7 +22,7 @@ void Transmitter::adjust_str(std::string & str)
 	{
 		const int adj = key- Useful::mod(str.size(),key);
 		for(int i=0 ; i < adj ; i++)
-			str+="x";
+			str+=" ";
 	}
 }
 
@@ -46,9 +46,16 @@ void Transmitter::rcesar_cipher( std::string & str )
 
 void Transmitter::rail_cipher( std::string & str )
 {
-	u_int * n = new u_int[key];
+	//std::cout << "size 0 " << str.size() << std::endl;
+	adjust_str(str);
+	//std::cout << "size 1 " << str.size() << std::endl;
+	int * n = new int[key];
 	const int seg = key-1;
 
+	for(int i=0 ; i<key ; i++)
+		n[i] = 0;
+
+	//std::cout << "seg " << seg << std::endl;
 	bool upFlag = false;
 
 	u_int currentPos = 0;
@@ -57,13 +64,32 @@ void Transmitter::rail_cipher( std::string & str )
 	{	
 		for( int j=0 ; j<seg && currentPos<str.size() ; j++ )
 		{
+	//		std::cout << "Me rompo aqui" << currentPos << std::endl;
 			//const int idx = i*seg + j
 			char tmp = str[currentPos];
 
+	//		std::cout << "Me rompo aqui" << currentPos << std::endl;
+
 			str.erase(str.begin() + currentPos);
+
+	//		std::cout << "Me rompo aqui" << currentPos << std::endl;
+
+
+	//		std::cout << seg - Useful::mod(currentPos,seg) << std::endl;
+	//		std::cout << n[seg - Useful::mod(currentPos,seg)] << std::endl;
+	//		std::cout << Useful::mod(currentPos,seg) << std::endl;
+	//		std::cout << n[Useful::mod(currentPos,seg)] << std::endl;
+	//		std::cout << n[ upFlag ? seg - Useful::mod(currentPos,seg) : Useful::mod(currentPos,seg) ] << std::endl;
+
 			str.insert(str.begin() + n[ upFlag ? seg - Useful::mod(currentPos,seg) : Useful::mod(currentPos,seg) ], tmp );
 
+
+	//		std::cout << "Me rompo aqui" << currentPos << std::endl;
+
 			adjust_indexes( upFlag ? seg - Useful::mod(currentPos,seg): Useful::mod(currentPos,seg) , n );
+
+	//		std::cout << "Me rompo aqui" << currentPos << std::endl;
+
 			currentPos++;
 		}
 		upFlag = not upFlag;
@@ -74,7 +100,6 @@ void Transmitter::rail_cipher( std::string & str )
 
 void Transmitter::route_cipher( std::string & str )
 {
-	adjust_str(str);
 	std::string str1;
 
 	unsigned int size = str.size();
